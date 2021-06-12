@@ -1,0 +1,40 @@
+<div class="row boundary">
+    <mat-card [style.transform]="sticky.transform" *ngFor="let sticky of stickiesArr;let i=index"
+        [id]="sticky.id+'note'" class="col-3 mat-elevation-z8 customnote" cdkDragBoundary=".boundary" cdkDrag>
+        <div class="options w-100">
+            <button mat-icon-button [matMenuTriggerFor]="menu"
+                class="rightpos menuOptions">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="makeNewNote(sticky.id)">
+                    <mat-icon>note_add</mat-icon>
+                    <span>{{MENU_OPTIONS.ADD}}</span>
+                </button>
+                <button mat-menu-item (click)="editableId = sticky.id;setFocus()">
+                    <mat-icon>edit</mat-icon>
+                    <span>{{MENU_OPTIONS.EDIT}}</span>
+                </button>
+                <button mat-menu-item (click)="removeNote(sticky.id)" [disabled]="stickiesArr.length == 1">
+                    <mat-icon>delete</mat-icon>
+                    <span>{{MENU_OPTIONS.DELETE}}</span>
+                </button>
+                <button mat-menu-item (click)="addLikes(sticky.id)">
+                    <mat-icon>favorite</mat-icon>
+                    <span>{{MENU_OPTIONS.LIKE}}</span>
+                </button>
+            </mat-menu>
+        </div>
+        <div class="m-auto">
+            <div class="d-flex justify-content-center custom-center">
+                <span *ngIf="editableId != sticky.id" class="noteName">{{sticky.name}}</span>
+                <span *ngIf="editableId == sticky.id">
+                    <input #edit type="text" class="editInput" (focusout)="editLabel(sticky.id,noteLabel)" [(ngModel)]="noteLabel"
+                        [placeholder]="PLACEHOLDER" />
+                </span>
+            </div>
+        </div>
+        <span class="likes">{{sticky.likes}}
+        </span>
+    </mat-card>
+</div>
