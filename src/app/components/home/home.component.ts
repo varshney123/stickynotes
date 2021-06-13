@@ -1,4 +1,6 @@
+import { CdkDragMove } from '@angular/cdk/drag-drop/drag-events';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { CONSTANTS } from '../../constant';
 import { sticky } from './homeInterface';
 
@@ -9,11 +11,12 @@ import { sticky } from './homeInterface';
 })
 export class HomeComponent implements OnInit {
 
-  MENU_OPTIONS = CONSTANTS.MENU_OPTIONS;
   PLACEHOLDER = CONSTANTS.LABEL_PLACEHOLDER;
   TRANSFORM_CONFIG = CONSTANTS.TRANSFORM_CONFIG;
-
-  @ViewChild('edit') editRef : ElementRef | any;
+  menuTopLeftPosition = { x: '0', y: '0' }
+  @ViewChild('edit') editRef: ElementRef | any;
+  @ViewChild('contextmenu') contextMenu: ElementRef | any;
+  transform: any;
   stickiesArr: sticky[] = [{
     name: CONSTANTS.LABEL_NAME,
     id: 0,
@@ -24,8 +27,22 @@ export class HomeComponent implements OnInit {
   editableId: number | undefined;
   noteLabel: string = "";
 
-
   constructor() { }
+
+  /*
+    function : To open context menus on right click
+    args : note id 
+  */
+  onRightClick(e: MouseEvent, item: any) {
+    e.preventDefault()
+    this.contextMenu.setMenuOptions(e, item)
+  }
+
+  //to tranform position w.r.t current node
+  getNewNotePos(pos: any) {
+    return `translate3d(${pos.x + window.visualViewport.pageLeft + this.TRANSFORM_CONFIG.NEW_X}px,
+             ${pos.y + window.visualViewport.pageTop - this.TRANSFORM_CONFIG.Y}px,0px)`
+  }
 
   /*
     function : To add new note and add new object in stickies array
@@ -36,7 +53,7 @@ export class HomeComponent implements OnInit {
     let element: any = document.getElementById(id + 'note');
     let pos = element.getBoundingClientRect();
 
-    transform = `translate3d(${pos.x + this.TRANSFORM_CONFIG.NEW_X}px,${pos.y - this.TRANSFORM_CONFIG.Y}px,0px)`
+    transform = this.getNewNotePos(pos)
 
     this.idCounter = this.idCounter + 1;
     let newSticky = {
@@ -59,7 +76,7 @@ export class HomeComponent implements OnInit {
         if (obj.id == id) {
           obj.name = name
         }
-      });  
+      });
     }
     this.editableId = undefined;
     this.noteLabel = "";
@@ -88,13 +105,16 @@ export class HomeComponent implements OnInit {
   /*
     function : To set autofocus on edit label input field
   */
-  setFocus(){
-    setTimeout(()=> {
+  setFocus(id: number) {
+    this.editableId = id;
+    setTimeout(() => {
       this.editRef.nativeElement.focus();
-    },0)
+    }, 0)
   }
 
+
   ngOnInit(): void {
+
   }
 
 }

@@ -1,0 +1,22 @@
+<div style="visibility: hidden; position: fixed;" [style.left]="menuTopLeftPosition.x"
+    [style.top]="menuTopLeftPosition.y" [matMenuTriggerFor]="menu"></div>
+<mat-menu #menu="matMenu" matMenuContent>
+    <ng-template matMenuContent let-item="item">
+        <button mat-menu-item (click)="makeNewNote(item.id)">
+            <mat-icon>note_add</mat-icon>
+            <span>{{MENU_OPTIONS.ADD}}</span>
+        </button>
+        <button mat-menu-item (click)="setFocus(item.id)">
+            <mat-icon>edit</mat-icon>
+            <span>{{MENU_OPTIONS.EDIT}}</span>
+        </button>
+        <button mat-menu-item (click)="remNote(item.id)" [disabled]="arrLength == 1">
+            <mat-icon>delete</mat-icon>
+            <span>{{MENU_OPTIONS.DELETE}}</span>
+        </button>
+        <button mat-menu-item (click)="addLikes(item.id)">
+            <mat-icon>favorite</mat-icon>
+            <span>{{MENU_OPTIONS.LIKE}}</span>
+        </button>
+    </ng-template>
+</mat-menu>

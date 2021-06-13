@@ -8,7 +8,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {HarnessLoader} from '@angular/cdk/testing';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
-import {MatMenuHarness} from '@angular/material/menu/testing';
+
+import { By } from '@angular/platform-browser';
 
 let loader: HarnessLoader;
 
@@ -51,55 +52,20 @@ describe('HomeComponent', () => {
     expect(compiled.querySelector('.noteName').textContent).toEqual('Sticky Default Label')
   })
 
-  it('should have button for contextual menus',() => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('button')).toBeTruthy()
-  })
-
-  it('should have contextual menu options',() => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('mat-menu')).toBeTruthy()
+  it('should open contextual menus on right click',async() => {
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.query(By.css('mat-card'));
+    const context = new MouseEvent('contextmenu');
+    compiled.nativeElement.dispatchEvent(context);
+    fixture.detectChanges()
+    expect(fixture.debugElement.nativeElement.querySelector('mat-menu')).toBeDefined()
   })
 
   it('by default likes should have 0 value',() => {
     const compiled = fixture.debugElement.nativeElement;
     expect(parseInt(compiled.querySelector('.likes').textContent)).toEqual(0)
-  })
-
-  it('contextual menu options should have 4 options',async() => {
-    const menu = await loader.getHarness(MatMenuHarness.with({selector: '.menuOptions'}));
-    await menu.open();
-    expect((await menu.getItems()).length).toBe(4);
-  })
-
-  it('click on add option should add new note',async() => {
-    const menu = await loader.getHarness(MatMenuHarness.with({selector: '.mat-menu-trigger'}));
-    await menu.open();
-    const menuItems = await menu.getItems()
-    await menuItems[0].click()
-    expect(component.stickiesArr.length).toBe(2);
-  })
-
-  it('click on like option should update counter',async() => {
-    const compiled = fixture.debugElement.nativeElement;
-    const menu = await loader.getHarness(MatMenuHarness.with({selector: '.mat-menu-trigger'}));
-    await menu.open();
-    const menuItems = await menu.getItems()
-    await menuItems[3].click()
-    expect(parseInt(compiled.querySelector('.likes').textContent)).toEqual(1);
-  })
-
-  it('click on delete option should delete note',async() => {
-    const compiled = fixture.debugElement.nativeElement;
-    const menu = await loader.getHarness(MatMenuHarness.with({selector: '.mat-menu-trigger'}));
-    await menu.open();
-    const menuItems = await menu.getItems()
-    await menuItems[0].click()
-    await menuItems[0].click()
-    await menuItems[2].click()
-    expect(component.stickiesArr.length).toEqual(2);
-  })
-
+  }) 
+ 
   it('click on edit option should show input',async() => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.editInput')).toBeDefined();

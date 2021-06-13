@@ -10,11 +10,13 @@ import {MatCardModule} from '@angular/material/card';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    ContextmenuComponent
   ],
   imports: [
     BrowserModule,
